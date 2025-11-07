@@ -1,0 +1,18 @@
+{
+  "name": "neon-chat-app",
+  "version": "1.0.0",
+  "description": "Real-time neon chat application without database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "socket.io": "^4.7.2"
+  },
+  "keywords": ["chat", "neon", "realtime", "socket.io", "express"],
+  "author": "YourName",
+  "license": "ISC"
+}
