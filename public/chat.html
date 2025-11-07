@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<h2>Neon Group Chat</h2>
+<input id="groupName" placeholder="Group name">
+<button onclick="createGroup()">Create Group</button>
+
+<ul id="messages"></ul>
+<input id="message" placeholder="Message">
+<button onclick="sendMessage()">Send</button>
+
+<script>
+const socket = io();
+const token = localStorage.getItem('token');
+const username = localStorage.getItem('username');
+const params = new URLSearchParams(window.location.search);
+const groupLink = params.get('group');
+
+async function createGroup() {
+    const name = document.getElementById('groupName').value;
+    const res = await fetch('/group', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name, token}) });
+    const data = await res.json();
+    alert("Share this link: "+window.location.origin + data.link);
+}
+
+async function joinGroup() {
+    if(groupLink){
+        await fetch('/join', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({link: groupLink, token}) });
+        socket.emit('join', { groupLink, username });
+    }
+}
+
+joinGroup();
+
+function sendMessage(){
+    const message = document.getElementById('message').value;
+    socket.emit('chat message', { groupLink, username, message });
+    document.getElementById('message').value = '';
+}
+
+socket.on('chat message', msg => {
+    const li = document.createElement('li');
+    li.textContent = msg;
+    document.getElementById('messages').appendChild(li);
+});
+</script>
+</body>
+</html>
